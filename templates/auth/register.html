@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% block title %}Create your account | FixNear{% endblock %}
+{% block content %}
+<section class="section auth-section">
+  <div class="auth-wrap">
+    <div class="panel auth-card">
+      <h1>Create your account</h1>
+      <p class="muted">A customer account lets you book and track services once booking opens. It is free.</p>
+
+      <form class="form-stack" method="post" action="{{ url_for('auth.register') }}" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.full_name, autocomplete="name") }}
+        {{ render_field(form.email, autocomplete="email") }}
+        {{ render_field(form.password, autocomplete="new-password", help="At least 10 characters, with a letter and a number.") }}
+        {{ render_field(form.confirm_password, autocomplete="new-password") }}
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Create account</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login', next=form.next_url.data or None) }}">Log in</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

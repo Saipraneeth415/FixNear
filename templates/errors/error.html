@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | FixNear{% endblock %}
+{% block content %}
+<section class="section error-page">
+  <div class="container">
+    <p class="error-code" aria-hidden="true">{{ code }}</p>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    <div class="error-actions">
+      <a class="btn btn-primary" href="{{ url_for('main.index') }}">Go to the homepage</a>
+      <a class="btn btn-outline" href="{{ url_for('main.services') }}">Browse services</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

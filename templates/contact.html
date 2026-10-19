@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Contact | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Contact</h1>
+    <p>Questions about this portfolio project?</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container prose">
+    <div class="panel">
+      <h2>Get in touch</h2>
+      <p class="contact-line">{{ icon('mail', 20) }} <span>contact@fixnear.example</span></p>
+      <p class="muted">This is a placeholder address on a reserved example domain. Replace it with your own contact details before sharing the project publicly.</p>
+    </div>
+    <p>A contact form with spam and CSRF protection will be added in a later stage.</p>
+    <p><a class="btn btn-outline" href="{{ url_for('main.index') }}">Back to the homepage</a></p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{# One service card. Expects: service. The title link covers the whole card. #}
+{% set cat = service.category %}
+<article class="card service-card">
+  <div class="service-card-top">
+    <span class="icon-chip">{{ icon(cat.icon, 22) }}</span>
+    <span class="badge">{{ cat.name }}</span>
+  </div>
+  <h3 class="service-card-title">
+    <a class="card-link" href="{{ url_for('main.service_detail', slug=service.slug) }}">{{ service.name }}</a>
+  </h3>
+  <p class="service-card-summary">{{ service.summary }}</p>
+  <ul class="meta-row">
+    <li>{{ icon('tag', 16) }} From {{ service.price_from|inr }} {% if service.is_sample %}<span class="muted">(sample)</span>{% endif %}</li>
+    <li>{{ icon('clock', 16) }} {{ service.duration }}</li>
+  </ul>
+</article>

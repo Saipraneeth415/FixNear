@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% block title %}{{ 'Add service' if mode == 'create' else 'Edit service' }} | Admin | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>{{ 'Add a service' if mode == 'create' else 'Edit ' ~ service.name }}</h1>
+    <p>{% if mode == 'edit' %}The address <span class="mono">{{ service.slug }}</span> cannot change. Existing bookings keep the price they were made at.{% else %}The address is part of the web link and cannot be changed later.{% endif %}</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    {% include "admin/_nav.html" %}
+    <div class="panel form-panel">
+      {% if form_error %}<div class="form-alert" role="alert">{{ form_error }}</div>{% endif %}
+      <form class="form-stack" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.name) }}
+        {% if mode == 'create' %}{{ render_field(form.slug, help="Lower-case letters, digits and hyphens, for example ac-servicing.") }}{% endif %}
+        {{ render_field(form.category_id) }}
+        {{ render_field(form.summary, extra={'maxlength': 255}) }}
+        {{ render_field(form.description, extra={'rows': 5, 'maxlength': 5000}) }}
+        <div class="form-row">
+          {{ render_field(form.price_from, extra={'min': 0, 'max': 1000000, 'inputmode': 'numeric'}) }}
+          {{ render_field(form.duration, help="For example: 1 to 2 hours.") }}
+        </div>
+        {{ render_field(form.includes, extra={'rows': 4}) }}
+        <div class="form-row">
+          {{ render_field(form.provider_name) }}
+          {{ render_field(form.provider_area) }}
+        </div>
+        {{ render_field(form.provider_bio, extra={'rows': 3, 'maxlength': 2000}) }}
+        <label class="check">{{ form.is_available() }} {{ form.is_available.label.text }}</label>
+        <label class="check">{{ form.is_sample() }} {{ form.is_sample.label.text }}</label>
+        <div class="form-actions">
+          <button class="btn btn-primary btn-lg" type="submit">{{ 'Create service' if mode == 'create' else 'Save changes' }}</button>
+          <a class="btn btn-outline btn-lg" href="{{ url_for('admin.services') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

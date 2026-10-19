@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Your dashboard | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Hello, {{ current_user.full_name }}</h1>
+    <p>Here is a summary of your bookings.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <div class="stat-grid">
+      <div class="stat" id="stat-total"><span class="stat-number">{{ stats.total }}</span><span class="stat-label">Total bookings</span></div>
+      <div class="stat" id="stat-pending"><span class="stat-number">{{ stats.pending }}</span><span class="stat-label">Pending</span></div>
+      <div class="stat" id="stat-accepted"><span class="stat-number">{{ stats.accepted }}</span><span class="stat-label">Accepted</span></div>
+      <div class="stat" id="stat-completed"><span class="stat-number">{{ stats.completed }}</span><span class="stat-label">Completed</span></div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="section-head section-head-row">
+          <h2>Recent bookings</h2>
+          {% if recent %}<a class="btn btn-outline btn-sm" href="{{ url_for('bookings.history') }}">See all</a>{% endif %}
+        </div>
+        {% if recent %}
+          <div class="booking-list">
+            {% for booking in recent %}
+              {% include "partials/_booking_card.html" %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="panel">
+            <div class="empty-state empty-inline">
+              <span class="icon-chip icon-chip-lg">{{ icon('calendar', 28) }}</span>
+              <h3>You have not booked any services yet</h3>
+              <p>Find a service you need and request a time. Your bookings and their status will appear here.</p>
+              <a class="btn btn-primary" href="{{ url_for('main.services') }}">Browse services</a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <aside class="panel">
+        <h2>Your account</h2>
+        <dl class="details">
+          <dt>Name</dt><dd>{{ current_user.full_name }}</dd>
+          <dt>Email</dt><dd>{{ current_user.email }}</dd>
+          <dt>Account type</dt><dd>Customer</dd>
+          <dt>Member since</dt><dd>{{ current_user.created_at.strftime('%d %B %Y') }}</dd>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

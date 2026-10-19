@@ -1,0 +1,16 @@
+{# One booking in a list. Expects: booking. Used by the dashboard and history. #}
+{% from "partials/_booking_status.html" import status_badge %}
+<article class="booking-card">
+  <div class="booking-card-head">
+    <p class="booking-ref">{{ booking.reference }}</p>
+    {{ status_badge(booking) }}
+  </div>
+  <h3 class="booking-card-title">{{ booking.service.name }}</h3>
+  <p class="booking-when">{{ icon('calendar', 16) }} {{ booking.appointment_date|date_long }} at {{ booking.appointment_time|time_12h }}</p>
+  <div class="booking-actions">
+    <a class="btn btn-outline btn-sm" href="{{ url_for('bookings.detail', reference=booking.reference) }}">View details</a>
+    {% if booking.status in ('pending', 'accepted') %}
+      <a class="btn btn-sm btn-quiet" href="{{ url_for('bookings.cancel', reference=booking.reference) }}">Cancel</a>
+    {% endif %}
+  </div>
+</article>

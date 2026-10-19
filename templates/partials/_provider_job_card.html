@@ -1,0 +1,17 @@
+{# One job in a provider list. Expects: booking. #}
+{% from "partials/_booking_status.html" import status_badge %}
+{% from "partials/_provider_actions.html" import job_actions %}
+<article class="booking-card">
+  <div class="booking-card-head">
+    <p class="booking-ref">{{ booking.reference }}</p>
+    {{ status_badge(booking) }}
+  </div>
+  <h3 class="booking-card-title">{{ booking.service.name }}</h3>
+  <p class="booking-when">{{ icon('calendar', 16) }} {{ booking.appointment_date|date_long }} at {{ booking.appointment_time|time_12h }}</p>
+  <p class="booking-where">{{ icon('pin', 16) }} {{ booking.address }}</p>
+  <p class="muted small">{{ booking.problem_description|truncate(110) }}</p>
+  <div class="booking-actions">
+    <a class="btn btn-outline btn-sm" href="{{ url_for('provider.detail', reference=booking.reference) }}">View details</a>
+    {{ job_actions(booking) }}
+  </div>
+</article>

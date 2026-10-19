@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Provider dashboard | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Provider dashboard</h1>
+    <p>Signed in as {{ current_user.full_name }}. These are the bookings assigned to you.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <div class="stat-grid">
+      <div class="stat" id="stat-total"><span class="stat-number">{{ stats.total }}</span><span class="stat-label">Total jobs</span></div>
+      <div class="stat" id="stat-pending"><span class="stat-number">{{ stats.pending }}</span><span class="stat-label">Awaiting your response</span></div>
+      <div class="stat" id="stat-accepted"><span class="stat-number">{{ stats.accepted }}</span><span class="stat-label">Accepted</span></div>
+      <div class="stat" id="stat-in_progress"><span class="stat-number">{{ stats.in_progress }}</span><span class="stat-label">In progress</span></div>
+      <div class="stat" id="stat-completed"><span class="stat-number">{{ stats.completed }}</span><span class="stat-label">Completed</span></div>
+    </div>
+
+    {% if not offered %}
+      <div class="panel panel-note">
+        <h2>No services linked to your account yet</h2>
+        <p>Bookings can only be assigned to you for services linked to your account, and none are linked yet. An administrator links services to provider accounts.</p>
+      </div>
+    {% else %}
+      <p class="muted">You offer:
+        {% for service in offered %}<span class="badge">{{ service.name }}</span> {% endfor %}
+      </p>
+    {% endif %}
+
+    <div class="section-head section-head-row">
+      <h2>Waiting for your response</h2>
+      <a class="btn btn-outline btn-sm" href="{{ url_for('provider.jobs') }}">All jobs</a>
+    </div>
+    {% if awaiting %}
+      <div class="grid grid-cards">
+        {% for booking in awaiting %}{% include "partials/_provider_job_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <div class="panel"><p class="muted">No requests are waiting for you.</p></div>
+    {% endif %}
+
+    <div class="section-head"><h2>Upcoming and active jobs</h2></div>
+    {% if active %}
+      <div class="grid grid-cards">
+        {% for booking in active %}{% include "partials/_provider_job_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <div class="panel"><p class="muted">You have no accepted or in-progress jobs.</p></div>
+    {% endif %}
+
+    {% if recent %}
+      <div class="section-head"><h2>Recently completed</h2></div>
+      <div class="grid grid-cards">
+        {% for booking in recent %}{% include "partials/_provider_job_card.html" %}{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

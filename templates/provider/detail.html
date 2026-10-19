@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% from "partials/_booking_status.html" import status_badge %}
+{% from "partials/_provider_actions.html" import job_actions %}
+{% block title %}Job {{ booking.reference }} | FixNear{% endblock %}
+{% block content %}
+<section class="page-head page-head-compact">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ url_for('provider.jobs') }}">My jobs</a></li>
+        <li aria-current="page">{{ booking.reference }}</li>
+      </ol>
+    </nav>
+    <h1>{{ booking.service.name }}</h1>
+    <p class="booking-ref-line">Reference <span class="reference-code reference-inline">{{ booking.reference }}</span> {{ status_badge(booking) }}</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container detail-grid">
+    <div class="detail-main">
+      <div class="panel">
+        <h2>Status</h2>
+        {% if steps %}
+          <ol class="tracker-steps tracker-inline" aria-label="Job progress">
+            {% for label, state in steps %}
+              <li class="{% if state == 'done' %}is-done{% elif state == 'current' %}is-current{% endif %}">
+                <span class="tracker-dot">{% if state == 'done' %}{{ icon('check', 16) }}{% endif %}</span>
+                <span><strong>{{ label }}</strong>{% if state == 'current' %}<small>Current status</small>{% endif %}</span>
+              </li>
+            {% endfor %}
+          </ol>
+        {% elif booking.status == 'cancelled' %}
+          <p class="status-note status-note-cancelled">The customer cancelled this booking.</p>
+          {% if booking.cancellation_reason %}<p class="muted">Reason given: {{ booking.cancellation_reason }}</p>{% endif %}
+        {% else %}
+          <p class="status-note status-note-cancelled">You rejected this request.</p>
+        {% endif %}
+      </div>
+
+      <div class="panel">
+        <h2>Appointment</h2>
+        <dl class="details">
+          <dt>Date</dt><dd>{{ booking.appointment_date|date_long }}</dd>
+          <dt>Time</dt><dd>{{ booking.appointment_time|time_12h }}</dd>
+          <dt>Address</dt><dd>{{ booking.address }}</dd>
+          <dt>Customer</dt><dd>{{ booking.contact_name }}<br>{{ booking.contact_phone }}</dd>
+        </dl>
+      </div>
+
+      <div class="panel">
+        <h2>Problem description</h2>
+        <p class="preserve-lines">{{ booking.problem_description }}</p>
+      </div>
+    </div>
+
+    <aside class="detail-side">
+      <div class="panel panel-book">
+        <h2>Your actions</h2>
+        {% if can_manage_booking(booking) and provider_actions(booking.status) %}
+          {{ job_actions(booking) }}
+          {% if booking.status == 'pending' %}
+            <p class="muted small">Accepting confirms you can do the job at this time. Rejecting cannot be undone; the customer would have to book again.</p>
+          {% endif %}
+        {% else %}
+          <p class="muted">No actions are available for a {{ booking.status_label|lower }} booking.</p>
+        {% endif %}
+        <p class="price">{{ booking.price_from_at_booking|inr }}<span class="price-note"> starting price</span></p>
+        <p class="muted small">The starting price when the customer booked. It is not a final quote.</p>
+        <a class="btn btn-outline btn-block" href="{{ url_for('provider.jobs') }}">Back to my jobs</a>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

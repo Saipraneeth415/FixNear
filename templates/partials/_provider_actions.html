@@ -1,0 +1,19 @@
+{# The buttons a provider can use on one booking.
+   They are drawn ONLY for the active provider the booking is assigned to; for anyone
+   else (customer, admin, visitor, another provider) this prints nothing.
+   The server re-checks every click, so this is a display rule, not the security. #}
+{% macro job_actions(booking) %}
+  {% if can_manage_booking(booking) %}
+    {% set actions = provider_actions(booking.status) %}
+    {% if actions %}
+      <div class="action-row">
+        {% for action in actions %}
+          <form class="inline-form" method="post" action="{{ url_for('provider.act', reference=booking.reference, action=action) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm {% if action == 'reject' %}btn-danger{% else %}btn-primary{% endif %}" type="submit">{{ provider_action_labels[action] }}</button>
+          </form>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+{% endmacro %}

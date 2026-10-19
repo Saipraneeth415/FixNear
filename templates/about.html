@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}About FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>About FixNear</h1>
+    <p>A local service booking platform built as a full-stack web development portfolio project.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container prose">
+    <h2>What FixNear is</h2>
+    <p>FixNear shows how customers can find local service providers and book repair or maintenance work such as plumbing, electrical repairs, AC servicing, laptop and bike repair, and home cleaning.</p>
+    <h2>Who it is for</h2>
+    <p>The finished project has three roles: customers who book services, providers who accept and complete jobs, and administrators who approve providers and monitor bookings.</p>
+    <h2>Current status</h2>
+    <p>This is an early development version. The homepage, search, category filters, service pages and customer accounts (registration and login) work. Bookings, provider tools and the admin area are planned for later stages.</p>
+    <h2>Sample data</h2>
+    <p>All services, prices and providers are clearly labelled sample data. FixNear does not list real businesses, process real bookings or take payments.</p>
+    <p><a class="btn btn-primary" href="{{ url_for('main.services') }}">Browse the sample services</a></p>
+  </div>
+</section>
+{% endblock %}

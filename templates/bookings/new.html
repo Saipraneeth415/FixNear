@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% block title %}Book {{ service.name }} | FixNear{% endblock %}
+{% block content %}
+<section class="page-head page-head-compact">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ url_for('main.services') }}">Services</a></li>
+        <li><a href="{{ url_for('main.service_detail', slug=service.slug) }}">{{ service.name }}</a></li>
+        <li aria-current="page">Book</li>
+      </ol>
+    </nav>
+    <h1>Book this service</h1>
+    <p>Tell us where and when you need help. If a provider who offers this service is free at that time, your request goes to them.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container detail-grid">
+    <div class="panel">
+      {% if form_error or form.submission_token.errors %}
+        <div class="form-alert" role="alert">
+          {{ form_error or form.submission_token.errors[0] }}
+        </div>
+      {% endif %}
+
+      <form class="form-stack" method="post" action="{{ url_for('bookings.new', slug=service.slug) }}" novalidate>
+        {{ form.hidden_tag() }}
+        <h2 class="form-section">Contact details</h2>
+        {{ render_field(form.contact_name, autocomplete="name") }}
+        {{ render_field(form.contact_phone, autocomplete="tel", help="We will use this to confirm the visit.", extra={'inputmode': 'tel'}) }}
+        {{ render_field(form.address, autocomplete="street-address", help="Full address including area and landmark.", extra={'rows': 3, 'maxlength': 300}) }}
+
+        <h2 class="form-section">Appointment</h2>
+        <div class="form-row">
+          {{ render_field(form.appointment_date, help="Pick today or a later date.", extra={'min': min_date, 'max': max_date}) }}
+          {{ render_field(form.appointment_time) }}
+        </div>
+
+        <h2 class="form-section">The problem</h2>
+        {{ render_field(form.problem_description, help="What is wrong, and anything the provider should know.", extra={'rows': 5, 'maxlength': 1000}) }}
+
+        <div class="form-actions">
+          <button class="btn btn-primary btn-lg" type="submit">Request booking</button>
+          <a class="btn btn-outline btn-lg" href="{{ url_for('main.service_detail', slug=service.slug) }}">Back to service</a>
+        </div>
+      </form>
+    </div>
+
+    <aside class="detail-side">
+      <div class="panel panel-book">
+        <p class="muted small">You are booking</p>
+        <h2>{{ service.name }}</h2>
+        <p><span class="badge">{{ category.name }}</span></p>
+        <p class="price">{{ service.price_from|inr }}<span class="price-note"> starting price</span></p>
+        <p class="muted small">A starting price, not a final quote.{% if service.is_sample %} Sample price for development.{% endif %}</p>
+        <ul class="meta-list">
+          <li>{{ icon('clock', 18) }} Usual time: {{ service.duration }}</li>
+        </ul>
+        <a href="{{ url_for('main.services') }}">Choose a different service</a>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

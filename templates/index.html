@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1>Book a local repair or cleaning service in a few minutes</h1>
+      <p class="hero-lead">Search plumbing, electrical, AC, computer, bike and home cleaning services, compare what is included, and see the starting price before you book.</p>
+
+      <form class="hero-search" action="{{ url_for('main.services') }}" method="get" role="search">
+        <div class="field">
+          <label for="hero-q">What do you need fixed?</label>
+          <input id="hero-q" name="q" type="search" maxlength="100" placeholder="For example: leaking tap, AC servicing, laptop screen" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="hero-category">Category</label>
+          <select id="hero-category" name="category">
+            <option value="">All categories</option>
+            {% for cat in nav_categories %}
+              <option value="{{ cat.slug }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit">{{ icon('search', 20) }} Search services</button>
+      </form>
+    </div>
+
+    <aside class="tracker" aria-label="Example of booking status tracking">
+      <p class="tracker-title">Follow every booking</p>
+      <p class="tracker-sub">Example only. This is how a booking moves from request to finished job.</p>
+      <ol class="tracker-steps">
+        <li class="is-done"><span class="tracker-dot">{{ icon('check', 16) }}</span><span><strong>Pending</strong><small>Request sent to the provider</small></span></li>
+        <li class="is-done"><span class="tracker-dot">{{ icon('check', 16) }}</span><span><strong>Accepted</strong><small>Provider confirms the time</small></span></li>
+        <li class="is-current"><span class="tracker-dot"></span><span><strong>In progress</strong><small>The work is being done</small></span></li>
+        <li><span class="tracker-dot"></span><span><strong>Completed</strong><small>Leave a review</small></span></li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cat-heading">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="cat-heading">Choose a category</h2>
+      <p>Six service types to start with. Pick one to see the services in it.</p>
+    </div>
+    <div class="grid grid-cats">
+      {% for cat in nav_categories %}
+        <a class="card cat-card" href="{{ url_for('main.services', category=cat.slug) }}">
+          <span class="icon-chip icon-chip-lg">{{ icon(cat.icon, 28) }}</span>
+          <span class="cat-card-body">
+            <strong>{{ cat.name }}</strong>
+            <span class="muted">{{ cat.blurb }}</span>
+            <span class="cat-count">{{ counts[cat.slug] }} services</span>
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-tint" aria-labelledby="pop-heading">
+  <div class="container">
+    <div class="section-head section-head-row">
+      <div>
+        <h2 id="pop-heading">Popular services</h2>
+        <p>Sample listings that show how services will appear.</p>
+      </div>
+      <a class="btn btn-outline" href="{{ url_for('main.services') }}">Browse all services</a>
+    </div>
+    <div class="grid grid-cards">
+      {% for service in featured %}
+        {% include "partials/_service_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="how-heading">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="how-heading">How it works</h2>
+      <p>Four steps from problem to finished job.</p>
+    </div>
+    <ol class="steps">
+      <li><h3>Search</h3><p>Type the problem or pick a category to find a matching service.</p></li>
+      <li><h3>Compare</h3><p>Read what is included, how long it takes and the starting price.</p></li>
+      <li><h3>Book a time</h3><p>Choose a date and time and describe the problem. Booking opens in a later stage of this project.</p></li>
+      <li><h3>Track the job</h3><p>Follow the status from pending to completed, then review the service.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-tint" aria-labelledby="why-heading">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="why-heading">Why use FixNear</h2>
+      <p>What the platform is designed to give customers and providers.</p>
+    </div>
+    <div class="grid grid-benefits">
+      <div class="benefit">{{ icon('tag', 26) }}<h3>Prices up front</h3><p>Every service lists a starting price, so there are fewer surprises.</p></div>
+      <div class="benefit">{{ icon('list', 26) }}<h3>Clear scope</h3><p>See exactly what each service includes before you book.</p></div>
+      <div class="benefit">{{ icon('calendar', 26) }}<h3>You pick the time</h3><p>Choose a preferred date and time that suits you.</p></div>
+      <div class="benefit">{{ icon('shield', 26) }}<h3>Built with safety in mind</h3><p>Private booking details stay private to the customer and their provider.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container cta-inner">
+    <h2>Find the right service for your home</h2>
+    <p>Browse the sample catalogue and open any service to see its details.</p>
+    <a class="btn btn-light btn-lg" href="{{ url_for('main.services') }}">Browse services</a>
+  </div>
+</section>
+{% endblock %}

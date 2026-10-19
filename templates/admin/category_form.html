@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% block title %}{{ 'Add category' if mode == 'create' else 'Edit category' }} | Admin | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>{{ 'Add a category' if mode == 'create' else 'Edit ' ~ category.name }}</h1>
+    <p>{% if mode == 'edit' %}The address <span class="mono">{{ category.slug }}</span> cannot change.{% else %}The address is part of the web link and cannot be changed later.{% endif %}</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    {% include "admin/_nav.html" %}
+    <div class="panel form-panel">
+      {% if form_error %}<div class="form-alert" role="alert">{{ form_error }}</div>{% endif %}
+      <form class="form-stack" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.name) }}
+        {% if mode == 'create' %}{{ render_field(form.slug, help="Lower-case letters, digits and hyphens, for example ac-repair.") }}{% endif %}
+        {{ render_field(form.icon) }}
+        {{ render_field(form.blurb, extra={'maxlength': 255}) }}
+        {{ render_field(form.sort_order, help="Lower numbers appear first.", extra={'min': 0, 'max': 999, 'inputmode': 'numeric'}) }}
+        <div class="form-actions">
+          <button class="btn btn-primary btn-lg" type="submit">{{ 'Create category' if mode == 'create' else 'Save changes' }}</button>
+          <a class="btn btn-outline btn-lg" href="{{ url_for('admin.services') }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

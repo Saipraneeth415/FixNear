@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "partials/_booking_status.html" import status_badge %}
+{% block title %}Booking saved | FixNear{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container confirm-wrap">
+    <div class="panel confirm-card">
+      <span class="icon-chip icon-chip-lg">{{ icon('check', 30) }}</span>
+      <h1>Your booking request is saved</h1>
+      <p class="muted">Keep this reference. You can quote it to support.</p>
+      <p class="reference-code" aria-label="Booking reference">{{ booking.reference }}</p>
+      <p>{{ status_badge(booking) }}</p>
+
+      <dl class="details details-left">
+        <dt>Service</dt><dd>{{ booking.service.name }}</dd>
+        <dt>When</dt><dd>{{ booking.appointment_date|date_long }} at {{ booking.appointment_time|time_12h }}</dd>
+        <dt>Address</dt><dd>{{ booking.address }}</dd>
+        <dt>Contact</dt><dd>{{ booking.contact_name }}, {{ booking.contact_phone }}</dd>
+      </dl>
+
+      {% if booking.provider %}
+        <p class="note">What happens next: your request has been sent to <strong>{{ booking.provider.full_name }}</strong> and stays <strong>Pending</strong> until they accept or reject it. You can cancel it any time while it is pending.</p>
+      {% else %}
+        <p class="note">What happens next: the request stays <strong>Pending</strong>. No provider is assigned to it yet, so it will not change until one is. You can cancel it any time while it is pending.</p>
+      {% endif %}
+
+      <div class="form-actions form-actions-center">
+        <a class="btn btn-primary" href="{{ url_for('bookings.detail', reference=booking.reference) }}">View booking details</a>
+        <a class="btn btn-outline" href="{{ url_for('bookings.history') }}">All my bookings</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

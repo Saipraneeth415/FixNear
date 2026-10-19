@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Services | Admin | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Services and categories</h1>
+    <p>Hidden services disappear from the site and take no new bookings. Services with bookings can be hidden but not deleted.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    {% include "admin/_nav.html" %}
+
+    <div class="section-head section-head-row">
+      <h2>Categories</h2>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.category_new') }}">Add category</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th scope="col">Name</th><th scope="col">Address</th><th scope="col">Order</th><th scope="col">Services</th><th scope="col">Actions</th></tr></thead>
+        <tbody>
+          {% for category, count in categories %}
+            <tr>
+              <td>{{ icon(category.icon, 18) }} {{ category.name }}</td>
+              <td class="mono">{{ category.slug }}</td>
+              <td>{{ category.sort_order }}</td>
+              <td>{{ count }}</td>
+              <td class="row-actions">
+                <a class="btn btn-outline btn-sm" href="{{ url_for('admin.category_edit', slug=category.slug) }}">Edit</a>
+                <a class="btn btn-quiet btn-sm" href="{{ url_for('admin.category_delete', slug=category.slug) }}">Delete</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5" class="muted">No categories yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-head section-head-row admin-gap">
+      <h2>Services</h2>
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.service_new') }}">Add service</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th scope="col">Name</th><th scope="col">Category</th><th scope="col">From</th><th scope="col">Visibility</th><th scope="col">Bookings</th><th scope="col">Actions</th></tr></thead>
+        <tbody>
+          {% for service, bookings in services %}
+            <tr>
+              <td>{{ service.name }}{% if service.is_sample %} <span class="badge badge-sample">Sample</span>{% endif %}<br><span class="mono muted small">{{ service.slug }}</span></td>
+              <td>{{ service.category.name }}</td>
+              <td>{{ service.price_from|inr }}</td>
+              <td>{% if service.is_available %}<span class="status status-completed">Visible</span>{% else %}<span class="status status-cancelled">Hidden</span>{% endif %}</td>
+              <td>{{ bookings }}</td>
+              <td class="row-actions">
+                <a class="btn btn-outline btn-sm" href="{{ url_for('admin.service_edit', slug=service.slug) }}">Edit</a>
+                <form class="inline-form" method="post" action="{{ url_for('admin.service_visibility', slug=service.slug, action='hide' if service.is_available else 'show') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-outline btn-sm" type="submit">{{ 'Hide' if service.is_available else 'Show' }}</button>
+                </form>
+                <a class="btn btn-quiet btn-sm" href="{{ url_for('admin.service_delete', slug=service.slug) }}">Delete</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="muted">No services yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

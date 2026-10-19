@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}My jobs | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>My jobs</h1>
+    <p>Every booking assigned to you, soonest appointment first.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <nav class="chips" aria-label="Filter by status">
+      <a class="chip" href="{{ url_for('provider.jobs') }}" {% if not active_status %}aria-current="true"{% endif %}>All <span class="chip-count">{{ counts.values()|sum }}</span></a>
+      {% for status in statuses %}
+        <a class="chip" href="{{ url_for('provider.jobs', status=status) }}" {% if active_status == status %}aria-current="true"{% endif %}>{{ labels[status] }} <span class="chip-count">{{ counts[status] }}</span></a>
+      {% endfor %}
+    </nav>
+
+    {% if items %}
+      <div class="grid grid-cards">
+        {% for booking in items %}{% include "partials/_provider_job_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="icon-chip icon-chip-lg">{{ icon('calendar', 28) }}</span>
+        {% if active_status %}
+          <h2>No {{ labels[active_status]|lower }} jobs</h2>
+          <p>You have no jobs with this status.</p>
+          <a class="btn btn-primary" href="{{ url_for('provider.jobs') }}">Show all jobs</a>
+        {% else %}
+          <h2>No jobs assigned to you yet</h2>
+          <p>When a customer books a service you offer and you are free at that time, the job appears here.</p>
+          <a class="btn btn-primary" href="{{ url_for('dashboard.provider') }}">Back to the dashboard</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% block title %}Log in | FixNear{% endblock %}
+{% block content %}
+<section class="section auth-section">
+  <div class="auth-wrap">
+    <div class="panel auth-card">
+      <h1>Log in</h1>
+      <p class="muted">Welcome back. Enter your email and password.</p>
+
+      {% if credentials_rejected %}
+        <div class="form-alert" role="alert">Invalid email or password.</div>
+      {% endif %}
+
+      <form class="form-stack" method="post" action="{{ url_for('auth.login') }}" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.email, autocomplete="email") }}
+        {{ render_field(form.password, autocomplete="current-password") }}
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Log in</button>
+      </form>
+
+      <p class="auth-switch">New to FixNear? <a href="{{ url_for('auth.register', next=form.next_url.data or None) }}">Create an account</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

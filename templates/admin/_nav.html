@@ -1,0 +1,8 @@
+{# Sub-navigation shown at the top of every admin page. #}
+{% set ep = request.endpoint or '' %}
+<nav class="admin-nav" aria-label="Admin sections">
+  <a href="{{ url_for('dashboard.admin') }}" {% if ep == 'dashboard.admin' %}aria-current="page"{% endif %}>Overview</a>
+  <a href="{{ url_for('admin.users') }}" {% if ep == 'admin.users' %}aria-current="page"{% endif %}>Users</a>
+  <a href="{{ url_for('admin.services') }}" {% if ep.startswith('admin.service') or ep.startswith('admin.categor') %}aria-current="page"{% endif %}>Services</a>
+  <a href="{{ url_for('admin.bookings') }}" {% if ep == 'admin.bookings' %}aria-current="page"{% endif %}>Bookings</a>
+</nav>

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "partials/_booking_status.html" import status_badge %}
+{% block title %}Administrator dashboard | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>Administrator dashboard</h1>
+    <p>Signed in as {{ current_user.full_name }}. These numbers are read live from the database.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    {% include "admin/_nav.html" %}
+
+    <h2 class="admin-heading">People</h2>
+    <div class="stat-grid">
+      <div class="stat" id="stat-users"><span class="stat-number">{{ counts.users }}</span><span class="stat-label">Total users</span></div>
+      <div class="stat" id="stat-customers"><span class="stat-number">{{ counts.customers }}</span><span class="stat-label">Customers</span></div>
+      <div class="stat" id="stat-providers"><span class="stat-number">{{ counts.providers }}</span><span class="stat-label">Providers</span></div>
+      <div class="stat" id="stat-admins"><span class="stat-number">{{ counts.admins }}</span><span class="stat-label">Administrators</span></div>
+      <div class="stat" id="stat-inactive_users"><span class="stat-number">{{ counts.inactive_users }}</span><span class="stat-label">Deactivated accounts</span></div>
+    </div>
+
+    <h2 class="admin-heading">Catalogue and bookings</h2>
+    <div class="stat-grid">
+      <div class="stat" id="stat-services"><span class="stat-number">{{ counts.services }}</span><span class="stat-label">Services ({{ counts.services_available }} available)</span></div>
+      <div class="stat" id="stat-bookings"><span class="stat-number">{{ counts.bookings }}</span><span class="stat-label">Total bookings</span></div>
+      <div class="stat" id="stat-pending"><span class="stat-number">{{ counts.pending }}</span><span class="stat-label">Pending</span></div>
+      <div class="stat" id="stat-accepted"><span class="stat-number">{{ counts.accepted }}</span><span class="stat-label">Accepted</span></div>
+      <div class="stat" id="stat-in_progress"><span class="stat-number">{{ counts.in_progress }}</span><span class="stat-label">In progress</span></div>
+      <div class="stat" id="stat-completed"><span class="stat-number">{{ counts.completed }}</span><span class="stat-label">Completed</span></div>
+    </div>
+
+    <div class="section-head section-head-row">
+      <h2>Newest bookings</h2>
+      <a class="btn btn-outline btn-sm" href="{{ url_for('admin.bookings') }}">All bookings</a>
+    </div>
+    {% if recent %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th scope="col">Reference</th><th scope="col">Customer</th><th scope="col">Service</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            {% for booking in recent %}
+              <tr>
+                <td class="mono">{{ booking.reference }}</td>
+                <td>{{ booking.customer.full_name }}</td>
+                <td>{{ booking.service.name }}</td>
+                <td>{{ status_badge(booking) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="panel"><p class="muted">No bookings have been made yet.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

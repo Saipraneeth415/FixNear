@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{% if active_category %}{{ active_category.name }} services{% else %}All services{% endif %} | FixNear{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>{% if active_category %}{{ active_category.name }}{% else %}Find a service{% endif %}</h1>
+    <p>{% if active_category %}{{ active_category.blurb }}{% else %}Search by name or problem, or filter by category.{% endif %}</p>
+
+    <form class="search-bar" action="{{ url_for('main.services') }}" method="get" role="search">
+      <div class="field field-grow">
+        <label for="q">Search services</label>
+        <input id="q" name="q" type="search" value="{{ query }}" maxlength="100" placeholder="For example: tap, AC, laptop, cleaning">
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="">All categories</option>
+          {% for cat in nav_categories %}
+            <option value="{{ cat.slug }}" {% if active_category and active_category.slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="btn btn-primary" type="submit">{{ icon('search', 18) }} Search</button>
+    </form>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <nav class="chips" aria-label="Filter by category">
+      <a class="chip" href="{{ url_for('main.services', q=query or None) }}" {% if not active_category %}aria-current="true"{% endif %}>All <span class="chip-count">{{ total }}</span></a>
+      {% for cat in nav_categories %}
+        <a class="chip" href="{{ url_for('main.services', q=query or None, category=cat.slug) }}" {% if active_category and active_category.slug == cat.slug %}aria-current="true"{% endif %}>{{ cat.name }} <span class="chip-count">{{ counts[cat.slug] }}</span></a>
+      {% endfor %}
+    </nav>
+
+    <p class="result-summary" role="status">
+      {{ results|length }} {{ 'service' if results|length == 1 else 'services' }} found
+      {%- if query %} for &ldquo;{{ query }}&rdquo;{% endif %}
+      {%- if active_category %} in {{ active_category.name }}{% endif %}
+    </p>
+
+    {% if results %}
+      <div class="grid grid-cards">
+        {% for service in results %}
+          {% include "partials/_service_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <span class="icon-chip icon-chip-lg">{{ icon('search', 28) }}</span>
+        <h2>No services match your search</h2>
+        <p>Check the spelling, try a shorter word such as &ldquo;tap&rdquo; or &ldquo;AC&rdquo;, or clear the filters to see everything.</p>
+        <a class="btn btn-primary" href="{{ url_for('main.services') }}">Clear filters</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,2 @@
+{# A coloured status label. The words carry the meaning, not just the colour. #}
+{% macro status_badge(booking) %}<span class="status status-{{ booking.status }}">{{ booking.status_label }}</span>{% endmacro %}

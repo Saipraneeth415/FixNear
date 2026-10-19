@@ -1,0 +1,21 @@
+{# Previous / Next links that keep the current filters. info comes from admin_rules.paginate(). #}
+{% macro pagination(info, endpoint, params) %}
+  <p class="muted small result-count" role="status">
+    {% if info.total %}Showing {{ info.first }} to {{ info.last }} of {{ info.total }}{% else %}Nothing to show{% endif %}
+  </p>
+  {% if info.pages > 1 %}
+    <nav class="pagination" aria-label="Pages">
+      {% if info.has_prev %}
+        <a class="btn btn-outline btn-sm" href="{{ url_for(endpoint, **dict(params, page=info.page - 1)) }}">Previous</a>
+      {% else %}
+        <span class="btn btn-sm btn-disabled" aria-disabled="true">Previous</span>
+      {% endif %}
+      <span class="pagination-status">Page {{ info.page }} of {{ info.pages }}</span>
+      {% if info.has_next %}
+        <a class="btn btn-outline btn-sm" href="{{ url_for(endpoint, **dict(params, page=info.page + 1)) }}">Next</a>
+      {% else %}
+        <span class="btn btn-sm btn-disabled" aria-disabled="true">Next</span>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endmacro %}

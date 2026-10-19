@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "partials/_pagination.html" import pagination %}
+{% from "partials/_booking_status.html" import status_badge %}
+{% block title %}Bookings | Admin | FixNear{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <h1>All bookings</h1>
+    <p>Newest first. This view is read-only.</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    {% include "admin/_nav.html" %}
+
+    <form class="filters" method="get" action="{{ url_for('admin.bookings') }}" role="search">
+      <div class="field field-grow"><label for="q">Reference, customer name or email</label><input id="q" name="q" type="search" value="{{ filters.q }}" maxlength="100"></div>
+      <div class="field"><label for="status">Status</label>
+        <select id="status" name="status"><option value="">Any status</option>{% for status in statuses %}<option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ labels[status] }}</option>{% endfor %}</select></div>
+      <div class="field"><label for="service">Service</label>
+        <select id="service" name="service"><option value="">Any service</option>{% for service in services %}<option value="{{ service.slug }}" {% if filters.service == service.slug %}selected{% endif %}>{{ service.name }}</option>{% endfor %}</select></div>
+      <div class="field"><label for="provider">Provider</label>
+        <select id="provider" name="provider"><option value="">Any provider</option><option value="unassigned" {% if filters.provider == 'unassigned' %}selected{% endif %}>Unassigned</option>{% for p in providers %}<option value="{{ p.id }}" {% if filters.provider == p.id|string %}selected{% endif %}>{{ p.full_name }}</option>{% endfor %}</select></div>
+      <button class="btn btn-primary" type="submit">{{ icon('search', 18) }} Filter</button>
+      <a class="btn btn-outline" href="{{ url_for('admin.bookings') }}">Reset</a>
+    </form>
+
+    {% if items %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th scope="col">Reference</th><th scope="col">Customer</th><th scope="col">Service</th><th scope="col">Provider</th><th scope="col">Appointment</th><th scope="col">Status</th><th scope="col">Made on</th></tr></thead>
+          <tbody>
+            {% for booking in items %}
+              <tr>
+                <td class="mono">{{ booking.reference }}</td>
+                <td>{{ booking.customer.full_name }}<br><span class="muted small wrap-anywhere">{{ booking.customer.email }}</span></td>
+                <td>{{ booking.service.name }}</td>
+                <td>{% if booking.provider %}{{ booking.provider.full_name }}{% else %}<span class="muted">Unassigned</span>{% endif %}</td>
+                <td>{{ booking.appointment_date.strftime('%d %b %Y') }}<br><span class="muted small">{{ booking.appointment_time|time_12h }}</span></td>
+                <td>{{ status_badge(booking) }}</td>
+                <td>{{ booking.created_at.strftime('%d %b %Y') }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state"><span class="icon-chip icon-chip-lg">{{ icon('calendar', 28) }}</span><h2>No bookings match</h2><p>Try different filters.</p><a class="btn btn-primary" href="{{ url_for('admin.bookings') }}">Reset filters</a></div>
+    {% endif %}
+    {{ pagination(page_info, 'admin.bookings', params) }}
+  </div>
+</section>
+{% endblock %}

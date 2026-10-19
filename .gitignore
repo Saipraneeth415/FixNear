@@ -1,0 +1,17 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+.env
+.env.*
+!.env.example
+
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+.pytest_cache/
+.coveragemigrations_backup/
+migrations_backup/

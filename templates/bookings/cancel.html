@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "partials/_form_field.html" import render_field %}
+{% from "partials/_booking_status.html" import status_badge %}
+{% block title %}Cancel booking {{ booking.reference }} | FixNear{% endblock %}
+{% block content %}
+<section class="section auth-section">
+  <div class="auth-wrap">
+    <div class="panel auth-card">
+      <h1>Cancel this booking?</h1>
+      <dl class="details details-left">
+        <dt>Reference</dt><dd>{{ booking.reference }}</dd>
+        <dt>Service</dt><dd>{{ booking.service.name }}</dd>
+        <dt>When</dt><dd>{{ booking.appointment_date|date_long }} at {{ booking.appointment_time|time_12h }}</dd>
+        <dt>Status</dt><dd>{{ status_badge(booking) }}</dd>
+      </dl>
+      <p class="muted">This cannot be undone. To book again you will need to make a new request.</p>
+
+      <form class="form-stack" method="post" action="{{ url_for('bookings.cancel', reference=booking.reference) }}" novalidate>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.reason, extra={'rows': 3, 'maxlength': 300}) }}
+        <button class="btn btn-danger btn-lg btn-block" type="submit">Yes, cancel this booking</button>
+        <a class="btn btn-outline btn-lg btn-block" href="{{ url_for('bookings.detail', reference=booking.reference) }}">Keep my booking</a>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

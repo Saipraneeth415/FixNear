@@ -1,0 +1,15 @@
+{# One labelled form field with its help text and error messages.
+   Usage: {{ render_field(form.email, autocomplete="email", help="Optional hint") }} #}
+{% macro render_field(field, autocomplete=None, help=None, extra=None) %}
+  {% set help_id = field.id ~ '-help' %}
+  {% set error_id = field.id ~ '-error' %}
+  {% set described = (help_id if help else '') ~ (' ' if help and field.errors else '') ~ (error_id if field.errors else '') %}
+  <div class="field{% if field.errors %} has-error{% endif %}">
+    {{ field.label }}
+    {{ field(autocomplete=autocomplete or false, **dict(extra or {}, **{'aria-describedby': described or false, 'aria-invalid': 'true' if field.errors else false})) }}
+    {% if help %}<p class="field-help" id="{{ help_id }}">{{ help }}</p>{% endif %}
+    {% for error in field.errors %}
+      <p class="field-error" id="{{ error_id }}" role="alert">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endmacro %}
